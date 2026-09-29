@@ -10,7 +10,22 @@ jobs:
         run: echo Hello, world!
 
   test:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Run a test step
         run: echo Hello, world!
+
+  lint:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a lint step
+        run: echo Running lint step...
+
+  deploy:
+    needs: [test, lint]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a deploy step
+        run: echo Running deploy step...
