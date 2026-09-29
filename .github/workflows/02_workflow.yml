@@ -1,0 +1,36 @@
+name: Second Workflow
+
+# on: # the trigger(s)
+#     push:
+#         branches: [main]
+
+# on:
+#     push:
+#         branches: [main]
+#         paths: ["src/**"]
+
+# on:
+#     pull_request:
+#         branches: [main]
+
+on:
+    workflow_dispatch:
+        inputs:
+            version:
+                description: "Release version"
+                required: true
+
+# on:
+#     schedule:
+#         - cron: "0 2 * * *" # Runs daily at 2 AM
+# - cron: "0 7 * * *" # Runs every day morning 7 am
+# - cron: "0 19 * * *" # Runs every day evening 7 pm
+# - cron: "0 * * * *" # Runs after 1 every hour
+# - cron: "0 0 1 * *" # Runs on the first day of every month at midnight
+# - cron: "0 0 L * *" # Runs on the last day of every month at midnight
+jobs:
+    say-hello:
+        runs-on: ubuntu-latest
+        steps:
+            - name: greeting
+              run: echo "Hello, GitHub Actions!"
