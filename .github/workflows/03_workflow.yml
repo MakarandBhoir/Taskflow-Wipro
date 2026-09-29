@@ -1,0 +1,41 @@
+name: Third Workflow
+
+on:
+    workflow_dispatch:
+        inputs:
+            environment:
+                description: "Select environment"
+                required: true
+                default: "dev"
+                type: choice
+                options:
+                    - dev
+                    - staging
+                    - prod
+
+env:
+    GLOBAL_VAR: "Global Environment Variable"
+
+jobs:
+    setup:
+        runs-on: ubuntu-latest
+        outputs:
+            status: ${{ job.status }}
+        steps:
+            - name: Setup Step
+              run: echo "Setup job completed"
+
+    greet:
+        runs-on: ubuntu-latest
+        needs: setup
+        if: success()
+        env:
+            MESSAGE: "Hello, World!"
+            ENVIRONMENT: ${{ github.event.inputs.environment }}
+        steps:
+            - name: Print Hello World
+              run: |
+                  echo "${{ env.MESSAGE }}"
+                  echo "Environment: ${{ env.ENVIRONMENT }}"
+                  echo "Global Variable: ${{ env.GLOBAL_VAR }}"
+                  echo "Setup job status: ${{ needs.setup.outputs.status }}"
