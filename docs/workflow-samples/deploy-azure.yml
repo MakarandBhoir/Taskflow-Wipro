@@ -1,0 +1,42 @@
+# Day 2 sample: copy to .github/workflows/ when you reach the CD module.
+# Needs: secret AZURE_WEBAPP_PUBLISH_PROFILE, and variable AZURE_WEBAPP_NAME.
+name: CD - Deploy to Azure App Service
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - run: mvn -B verify
+      - uses: actions/upload-artifact@v4
+        with:
+          name: taskflow-jar
+          path: target/taskflow.jar
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.webapp-url }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: taskflow-jar
+      - name: Deploy
+        id: deploy
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ vars.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: taskflow.jar
