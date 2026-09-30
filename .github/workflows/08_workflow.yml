@@ -1,0 +1,51 @@
+name: Eighth Workflow
+on:
+    push:
+        branches: ["main"]
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Set up JDK 17
+              uses: actions/setup-java@v4
+              with:
+                  distribution: temurin
+                  java-version: "17"
+                  cache: maven
+            - name: Build with Maven
+              run: mvn clean package
+
+            - name: Upload jar
+              uses: actions/upload-artifact@v4
+              with:
+                  name: taskflow
+                  path: target/taskflow.jar
+
+    deploy:
+        runs-on: ubuntu-latest
+        needs: build
+        environment: prod
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Download jar artifact
+              uses: actions/download-artifact@v4
+              with:
+                  name: taskflow
+                  path: ./
+            - name: Login to Azure
+              uses: azure/login@v1
+              with:
+                  creds: ${{ secrets.AZURE_CREDENTIALS }}
+            - name: Deploy to Azure
+              uses: azure/webapps-deploy@v2
+              with:
+                  app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+                  package: ./taskflow.jar
+
+            - name: Logout from Azure
+              run: az logout

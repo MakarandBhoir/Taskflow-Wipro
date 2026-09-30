@@ -1,27 +1,26 @@
 name: Fourth Workflow
 on:
-    push:
-        branches: ["main"]
-        paths: ["src/**"]
-
+  push:
+    branches: ["main"]
+    paths: ["src/**"]
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            - name: Set up JDK 17
-              uses: actions/setup-java@v4
-              with:
-                  distribution: temurin
-                  java-version: "17"
-                  cache: maven
-            - name: Build with Maven
-              run: mvn clean package
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+      - name: Build with Maven
+        run: mvn clean package
 
-            - name: Upload jar
-              uses: actions/upload-artifact@v4
-              with:
-                  name: taskflow
-                  path: target/taskflow.jar
+      - name: Upload jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: taskflow
+          path: target/taskflow.jar
