@@ -8,4 +8,6 @@ jobs:
         environment: dev
         steps:
             - name: Display API Key
-              run: echo "${{ secrets.API_KEY }}"
+              run: |
+                  echo "${{ secrets.API_KEY }}"
+                  echo "${{ vars.LAPTOP }}"
