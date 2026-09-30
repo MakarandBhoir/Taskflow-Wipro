@@ -1,0 +1,21 @@
+name: Sixth Workflow
+on:
+    workflow_dispatch:
+
+jobs:
+    test:
+        strategy:
+            matrix:
+                java-version: [11, 17, 21]
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/cache@v4
+              with:
+                  path: ~/.m2
+                  key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+            - uses: actions/setup-java@v5
+              with:
+                  distribution: temurin
+                  java-version: ${{ matrix.java-version }}
+            - run: echo Running with Java version "${{ matrix.java-version }}"
