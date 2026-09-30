@@ -1,0 +1,11 @@
+name: Fifth Workflow
+on:
+    workflow_dispatch:
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        environment: dev
+        steps:
+            - name: Display API Key
+              run: echo "${{ secrets.API_KEY }}"
